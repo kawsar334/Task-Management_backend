@@ -67,13 +67,22 @@ app.get("/", (req, res) => {
     res.send("helo")
 })
 app.post("/login", (req, res) => {
+
+//     const options = {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+// }
     const { userId, email, displayName } = req.body;
     if (!userId || !email) return res.status(400).json({ message: "Invalid credentials" });
     const token = jwt.sign({ id: userId, email, displayName }, JWT_SECRET, { expiresIn: "1h" });
     res.cookie('token', token, {
+        // httpOnly: true,
+        // secure: process.env.NODE_ENV === 'production',
+        // maxAge: 3600000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 3600000,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     })
     res.json({ token });
 });
